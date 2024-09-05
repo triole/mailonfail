@@ -86,7 +86,7 @@ If a command fails, send a mail...
 Usage: mailonfail [flags] [<command> ...]
 
 Arguments:
-  <command> ...    command to run, flags always have to be in front
+  [<command> ...]    command to run, flags always have to be in front
 
 Flags:
   -h, --help                      Show context-sensitive help.
@@ -96,7 +96,6 @@ Flags:
       --log-level="info"          log level
       --log-no-colors             disable output colours, print plain text
       --log-json                  enable json log, instead of text one
-      --validate-conf             validate configuration and pretty print it
   -n, --dry-run                   dry run, just print operations that would run
   -V, --version-flag              display version
 ```
