@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"regexp"
@@ -17,7 +18,7 @@ var (
 )
 
 var CLI struct {
-	Command      []string `help:"command to run, flags always have to be in front" arg:"" required:"" passthrough:""`
+	Command      []string `help:"command to run, flags always have to be in front" arg:"" optional:"" passthrough:""`
 	ConfigFile   string   `help:"config file to load, values can be overwritten by env vars" short:"c"`
 	LogFile      string   `help:"log file" default:"/dev/stdout"`
 	LogLevel     string   `help:"log level" default:"info" enum:"trace,debug,info,error"`
@@ -41,12 +42,13 @@ func parseArgs() {
 		}),
 	)
 	_ = ctx.Run()
-
 	if CLI.VersionFlag {
 		printBuildTags(BUILDTAGS)
 		os.Exit(0)
 	}
-	// ctx.FatalIfErrorf(err)
+	if len(CLI.Command) < 1 {
+		ctx.FatalIfErrorf(errors.New("command required"))
+	}
 }
 
 func printBuildTags(buildtags string) {
