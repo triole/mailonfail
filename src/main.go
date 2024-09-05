@@ -11,9 +11,11 @@ var (
 func main() {
 	parseArgs()
 	lg = logseal.Init(CLI.LogLevel, CLI.LogFile, CLI.LogNoColors, CLI.LogJSON)
+	lg.Info("run " + appName)
 	conf := initConf(CLI.Command, CLI.ConfigFile, CLI.DryRun)
 
-	// execute(conf)
-	lg.Debug("conf", logseal.F{"config": conf})
-	conf.RunCmd()
+	commandReturn := conf.runCmd()
+	if commandReturn.Error != nil || commandReturn.Exitcode != 0 || conf.DryRun {
+		conf.sendMail(commandReturn)
+	}
 }

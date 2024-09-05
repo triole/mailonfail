@@ -6,3 +6,8 @@ smtp_pass: test_pass
 mail_from: user@test.mail
 mail_to: user@test.mail
 mail_on_success: false
+
+subject_prefix: "[{{.hostname}}] "
+mail_template: >
+  </br><b>Error</b></br>{{.error}}</br> </br><b>Output</b></br>{{.output}}</br>
+  </br><b>Exitcode</b></br></br>{{.exitcode}}</br>
