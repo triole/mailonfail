@@ -16,6 +16,7 @@ type cmdReturn struct {
 	Out      []byte
 	Exitcode int
 	Error    error
+	Success  bool
 }
 
 func (conf tConf) runCmd() (cr cmdReturn) {
@@ -48,5 +49,6 @@ func (conf tConf) runCmd() (cr cmdReturn) {
 	} else {
 		lg.Info("would have run", logseal.F{"cmd": conf.Cmd})
 	}
+	cr.Success = cr.Exitcode == 0
 	return
 }

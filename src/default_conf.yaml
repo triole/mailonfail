@@ -1,5 +1,6 @@
 ---
-subject_prefix: "[{{.hostname}}] mailonfail, "
+subject_prefix: >
+  [mof@{{.hostname}}] cmd: {{.cmd}}, exitcode: {{.exitcode}}
 mail_template: |
   <b>Runtime</b>: {{.runtime}}</br>
   <b>User</b>: {{.user}}</br>

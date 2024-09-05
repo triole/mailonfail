@@ -18,8 +18,7 @@ func main() {
 	conf := initConf(CLI.Command, CLI.ConfigFile, CLI.DryRun)
 
 	commandReturn := conf.runCmd()
-	if commandReturn.Error != nil || commandReturn.Exitcode != 0 ||
-		conf.MailOnSuccess || conf.DryRun {
+	if !commandReturn.Success || conf.MailOnSuccess || conf.DryRun {
 		conf.sendMail(commandReturn)
 	}
 }

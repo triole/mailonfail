@@ -12,13 +12,14 @@ import (
 )
 
 func (conf tConf) sendMail(cr cmdReturn) {
+	subject := conf.execTemplate(conf.SubjectPrefix, cr)
 	body := conf.execTemplate(conf.MailTemplate, cr)
-	lg.Trace("send mail", logseal.F{"body": body})
+	lg.Trace("send mail", logseal.F{"body": body, "subject": subject})
 	if !conf.DryRun {
 		m := mail.NewMessage()
 		m.SetHeader("From", conf.MailFrom)
 		m.SetHeader("To", conf.MailTo)
-		m.SetHeader("Subject", conf.execTemplate(conf.SubjectPrefix, cr)+"cmd: "+fmt.Sprintf("%s", conf.Cmd))
+		m.SetHeader("Subject", subject)
 		m.SetBody("text/html", body)
 		d := mail.NewDialer(
 			conf.SmtpHost, conf.SmtpPort, conf.SmtpUser, conf.SmtpPass,
@@ -34,7 +35,7 @@ func (conf tConf) execTemplate(s string, cr cmdReturn) string {
 	ui := getUserInfo()
 	templ := template.Must(template.New("tpl").Parse(s))
 	err := templ.Execute(buf, map[string]interface{}{
-		"command":   conf.Cmd,
+		"cmd":       fmt.Sprintf("%q", conf.Cmd),
 		"runtime":   cr.RunTime,
 		"error":     cr.Error,
 		"exitcode":  cr.Exitcode,
