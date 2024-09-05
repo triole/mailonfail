@@ -1,0 +1,8 @@
+---
+smtp_host: smtp.host.com
+smtp_port: 993
+smtp_user: test_user
+smtp_pass: test_pass
+mail_from: user@test.mail
+mail_to: user@test.mail
+mail_on_success: false
