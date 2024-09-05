@@ -43,7 +43,7 @@ mail_template: >
   </br><b>Exitcode</b></br></br>{{.exitcode}}</br>
 ```
 
-Every config value can be overwritten by an env var. Available env vars...
+Every config value can be overwritten by an env var. This comes in handy in `crontabs`. Available env vars...
 
 ```go mdox-exec="sh/print_av_env_vars.sh"
 MOF_MAIL_FROM
