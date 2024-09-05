@@ -8,7 +8,12 @@ import (
 
 	"github.com/triole/logseal"
 	yaml "gopkg.in/yaml.v3"
+
+	_ "embed"
 )
+
+//go:embed default_conf.yaml
+var defaultConf string
 
 type tConf struct {
 	Cmd           []string
@@ -100,15 +105,16 @@ func getEnvVars(conf *tConf) *tConf {
 			}
 		}
 	}
+
+	var defaultConf tConf
+	if conf.SubjectPrefix == "" || conf.MailTemplate != "" {
+		defaultConf = readDefaultConf()
+	}
 	if conf.SubjectPrefix == "" {
-		conf.SubjectPrefix = "[{{.hostname}}] mailonfail, "
+		conf.SubjectPrefix = defaultConf.SubjectPrefix
 	}
 	if conf.MailTemplate == "" {
-		conf.MailTemplate = "<b>Runtime</b>: {{.runtime}}</br>" +
-			"</br><b>Command</b></br>{{.command}}.</br>" +
-			"</br><b>Error</b></br>{{.error}}</br>" +
-			"</br><b>Output</b></br>{{.output}}</br>" +
-			"</br><b>Exitcode</b></br></br>{{.exitcode}}</br>"
+		conf.MailTemplate = defaultConf.MailTemplate
 	}
 	return conf
 }
@@ -134,4 +140,13 @@ func stringToBool(s string) (b bool) {
 		)
 	}
 	return b
+}
+
+func readDefaultConf() (conf tConf) {
+	err := yaml.Unmarshal([]byte(defaultConf), &conf)
+	lg.IfErrFatal(
+		"can not unmarshal default config",
+		logseal.F{"error": err},
+	)
+	return conf
 }

@@ -1,0 +1,9 @@
+---
+subject_prefix: "[{{.hostname}}] mailonfail, "
+mail_template: |
+  <b>Runtime</b>: {{.runtime}}</br>
+  <b>User</b>: {{.user}}</br>
+  <b>Command</b>: {{.command}}.</br>
+  </br><b>Error</b></br>{{.error}}</br>
+  </br><b>Output</b></br>{{.output}}</br>
+  </br><b>Exitcode</b></br>{{.exitcode}}</br>
