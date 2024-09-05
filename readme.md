@@ -71,7 +71,10 @@ group_id
 home
 hostname
 output
-runtime
+run_duration
+run_end
+run_start
+success
 user
 user_id
 user_name
