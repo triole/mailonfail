@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/triole/logseal"
 )
 
@@ -16,5 +14,6 @@ func main() {
 	conf := initConf(CLI.Command, CLI.ConfigFile, CLI.DryRun)
 
 	// execute(conf)
-	fmt.Printf("%+v\n", conf)
+	lg.Debug("conf", logseal.F{"config": conf})
+	conf.RunCmd()
 }
