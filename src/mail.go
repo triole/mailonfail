@@ -31,6 +31,7 @@ func (conf tConf) sendMail(cr cmdReturn) {
 
 func (conf tConf) execTemplate(s string, cr cmdReturn) string {
 	buf := &bytes.Buffer{}
+	ui := getUserInfo()
 	templ := template.Must(template.New("tpl").Parse(s))
 	err := templ.Execute(buf, map[string]interface{}{
 		"command":  conf.Cmd,
@@ -39,7 +40,11 @@ func (conf tConf) execTemplate(s string, cr cmdReturn) string {
 		"exitcode": cr.Exitcode,
 		"output":   cr.Out,
 		"hostname": getHostName(),
-		"user":     getUserName(),
+		"user_id":  ui.UserID,
+		"group_id": ui.GroupID,
+		"username": ui.UserName,
+		"name":     ui.Name,
+		"home":     ui.Home,
 	})
 	lg.IfErrError("unable to use mail template", logseal.F{"error": err})
 	return buf.String()
@@ -50,10 +55,22 @@ func getHostName() (hostname string) {
 	return
 }
 
-func getUserName() (userName string) {
+type userInfo struct {
+	UserID   string
+	GroupID  string
+	UserName string
+	Name     string
+	Home     string
+}
+
+func getUserInfo() (ui userInfo) {
 	user, err := user.Current()
 	if err == nil {
-		userName = user.Username
+		ui.UserID = user.Uid
+		ui.GroupID = user.Gid
+		ui.UserName = user.Username
+		ui.Name = user.Name
+		ui.Home = user.HomeDir
 	}
-	return
+	return ui
 }

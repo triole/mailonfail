@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/user"
-	"path"
 	"regexp"
 	"strings"
 
@@ -14,12 +12,12 @@ import (
 var (
 	BUILDTAGS      string
 	appName        = "mailonfail"
-	appDescription = "if a command fails, send a mail"
+	appDescription = "If a command fails, send a mail...\n\nUsage: mailonfail [flags] [<command> ...]"
 	appMainversion = "0.1"
 )
 
 var CLI struct {
-	Command      []string `help:"command to run, flags always have to be in front" arg:"" optional:"" passthrough:""`
+	Command      []string `help:"command to run, flags always have to be in front" arg:"" required:"" passthrough:""`
 	ConfigFile   string   `help:"config file to load, values can be overwritten by env vars" short:"c"`
 	LogFile      string   `help:"log file" default:"/dev/stdout"`
 	LogLevel     string   `help:"log level" default:"info" enum:"trace,debug,info,error"`
@@ -31,20 +29,16 @@ var CLI struct {
 }
 
 func parseArgs() {
-	userdata := getUserdataMap()
-	defaultConfigFolder := path.Join(userdata["home"], ".conf", appName)
-
 	ctx := kong.Parse(&CLI,
 		kong.Name(appName),
 		kong.Description(appDescription),
 		kong.UsageOnError(),
 		kong.ConfigureHelp(kong.HelpOptions{
-			Compact: true,
-			Summary: true,
+			NoAppSummary: true,
+			Compact:      true,
+			Summary:      true,
+			FlagsLast:    false,
 		}),
-		kong.Vars{
-			"configFile": defaultConfigFolder + "/conf.yaml",
-		},
 	)
 	_ = ctx.Run()
 
@@ -60,18 +54,4 @@ func printBuildTags(buildtags string) {
 	s := regexp.ReplaceAllString(buildtags, "\n")
 	s = strings.Replace(s, "_subversion: ", "Version: "+appMainversion+".", -1)
 	fmt.Printf("%s\n", s)
-}
-
-func getUserdataMap() map[string]string {
-	user, err := user.Current()
-	if err != nil {
-		panic(err)
-	}
-	m := make(map[string]string)
-	m["user_id"] = user.Uid
-	m["group_id"] = user.Gid
-	m["username"] = user.Username
-	m["name"] = user.Name
-	m["home"] = user.HomeDir + "/"
-	return m
 }
