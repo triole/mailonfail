@@ -70,11 +70,11 @@ exitcode
 group_id
 home
 hostname
-name
 output
 runtime
+user
 user_id
-username
+user_name
 ```
 
 ## Help
