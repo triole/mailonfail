@@ -35,17 +35,20 @@ func (conf tConf) execTemplate(s string, cr cmdReturn) string {
 	ui := getUserInfo()
 	templ := template.Must(template.New("tpl").Parse(s))
 	err := templ.Execute(buf, map[string]interface{}{
-		"cmd":       fmt.Sprintf("%q", conf.Cmd),
-		"runtime":   cr.RunTime,
-		"error":     cr.Error,
-		"exitcode":  cr.Exitcode,
-		"output":    cr.Out,
-		"hostname":  getHostName(),
-		"user_id":   ui.UserID,
-		"group_id":  ui.GroupID,
-		"user":      ui.UserName,
-		"user_name": ui.Name,
-		"home":      ui.Home,
+		"command":      fmt.Sprintf("%q", conf.Cmd),
+		"run_start":    cr.RunStart,
+		"run_end":      cr.RunEnd,
+		"run_duration": cr.RunDuration,
+		"error":        cr.Error,
+		"exitcode":     cr.Exitcode,
+		"output":       string(cr.Output),
+		"hostname":     getHostName(),
+		"user_id":      ui.UserID,
+		"group_id":     ui.GroupID,
+		"user":         ui.UserName,
+		"user_name":    ui.Name,
+		"home":         ui.Home,
+		"success":      cr.Success,
 	})
 	lg.IfErrError("unable to use mail template", logseal.F{"error": err})
 	return buf.String()

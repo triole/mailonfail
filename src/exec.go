@@ -12,15 +12,17 @@ import (
 )
 
 type cmdReturn struct {
-	RunTime  time.Time
-	Out      []byte
-	Exitcode int
-	Error    error
-	Success  bool
+	RunStart    time.Time
+	RunEnd      time.Time
+	RunDuration time.Duration
+	Output      []byte
+	Exitcode    int
+	Error       error
+	Success     bool
 }
 
 func (conf tConf) runCmd() (cr cmdReturn) {
-	cr.RunTime = time.Now()
+	cr.RunStart = time.Now()
 	var stdBuffer bytes.Buffer
 	if !conf.DryRun {
 		cmd := exec.Command(conf.Cmd[0], conf.Cmd[1:]...)
@@ -29,7 +31,6 @@ func (conf tConf) runCmd() (cr cmdReturn) {
 
 		cmd.Stdout = mw
 		cmd.Stderr = mw
-		cr.Exitcode = 127 // default exitcode path not found
 		if cr.Error = cmd.Run(); cr.Error != nil {
 			if exiterr, ok := cr.Error.(*exec.ExitError); ok {
 				// the program has exited with an exit code != 0
@@ -39,6 +40,7 @@ func (conf tConf) runCmd() (cr cmdReturn) {
 			}
 		}
 		if cr.Error != nil {
+			cr.Exitcode = 127
 			lg.Info(
 				"run command failed",
 				logseal.F{
@@ -49,6 +51,9 @@ func (conf tConf) runCmd() (cr cmdReturn) {
 	} else {
 		lg.Info("would have run", logseal.F{"cmd": conf.Cmd})
 	}
-	cr.Success = cr.Exitcode == 0
+	cr.RunEnd = time.Now()
+	cr.RunDuration = cr.RunEnd.Sub(cr.RunStart)
+	cr.Success = (cr.Error == nil) && (cr.Exitcode == 0)
+	cr.Output = stdBuffer.Bytes()
 	return
 }
