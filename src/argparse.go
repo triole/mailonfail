@@ -54,6 +54,6 @@ func parseArgs() {
 func printBuildTags(buildtags string) {
 	regexp, _ := regexp.Compile(`({|}|,)`)
 	s := regexp.ReplaceAllString(buildtags, "\n")
-	s = strings.Replace(s, "_subversion: ", "Version: "+appMainversion+".", -1)
+	s = strings.Replace(s, "_subversion: ", "version: "+appMainversion+".", -1)
 	fmt.Printf("%s\n", s)
 }
