@@ -1,13 +1,23 @@
 ---
 smtp_host: smtp.host.com
-smtp_port: 993
+smtp_port: 2525
 smtp_user: test_user
 smtp_pass: test_pass
 mail_from: user@test.mail
 mail_to: user@test.mail
 mail_on_success: false
 
-subject_prefix: "[{{.hostname}}] "
-mail_template: >
-  </br><b>Error</b></br>{{.error}}</br> </br><b>Output</b></br>{{.output}}</br>
-  </br><b>Exitcode</b></br></br>{{.exitcode}}</br>
+subject_prefix: >
+  [mof@{{.hostname}}] ({{if .success}}success{{else}}error{{end}})
+  cmd: {{.command}}, exitcode: {{.exitcode}}
+mail_template: |
+  <b>Run Start</b>&nbsp;&nbsp;{{.run_start}}</br>
+  <b>Run End</b>&nbsp;&nbsp;&nbsp;&nbsp;{{.run_end}}</br>
+  <b>Duration</b>&nbsp;&nbsp;&nbsp;{{.run_duration}}</br></br>
+  <b>User</b>&nbsp;&nbsp;{{.user}}</br>
+  <b>Command</b>&nbsp;&nbsp;{{.command}}</br>
+  </br><b>Output</b></br><pre>{{.output}}</pre></br>
+  {{if not .success}}
+  </br><b>Error</b></br>{{.error}}</br>
+  {{end}}
+  </br><b>Exitcode</b></br>{{.exitcode}}</br>
