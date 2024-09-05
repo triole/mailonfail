@@ -11,11 +11,15 @@ var (
 func main() {
 	parseArgs()
 	lg = logseal.Init(CLI.LogLevel, CLI.LogFile, CLI.LogNoColors, CLI.LogJSON)
-	lg.Info("run " + appName)
+	lg.Info(
+		"run "+appName,
+		logseal.F{"log-level": CLI.LogLevel, "log-file": CLI.LogFile},
+	)
 	conf := initConf(CLI.Command, CLI.ConfigFile, CLI.DryRun)
 
 	commandReturn := conf.runCmd()
-	if commandReturn.Error != nil || commandReturn.Exitcode != 0 || conf.DryRun {
+	if commandReturn.Error != nil || commandReturn.Exitcode != 0 ||
+		conf.MailOnSuccess || conf.DryRun {
 		conf.sendMail(commandReturn)
 	}
 }
