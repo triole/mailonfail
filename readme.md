@@ -71,7 +71,7 @@ If `mail_subject` or `mail_body` are not set, they are loaded from the default [
 
 ## Mail template
 
-The following variables are available in the mail template. Make sure to use golang template syntax (e.g. `{{.username}}`, `{{.output}}`). Available template vars...
+The following variables are available in the email templates. Make sure to use golang template syntax (e.g. `{{.username}}`, `{{.output}}`).
 
 ```go mdox-exec="sh/print_av_tpl_vars.sh"
 run_start
