@@ -67,7 +67,7 @@ MOF_MAIL_SUBJECT
 MOF_MAIL_BODY
 ```
 
-If `subject_prefix` and `mail_template` are not set they are loaded from the default [conf](src/default_conf.yaml).
+If `mail_subject` or `mail_body` are not set, they are loaded from the default [conf](src/default_conf.yaml).
 
 ## Mail template
 
