@@ -11,7 +11,7 @@ import (
 	mail "gopkg.in/mail.v2"
 )
 
-func (conf tConf) sendMail(cr cmdReturn) {
+func (conf tConf) sendMail(cr tCmdReturn) {
 	subject := conf.execTemplate(conf.SubjectPrefix, cr)
 	body := conf.execTemplate(conf.MailTemplate, cr)
 	lg.Trace("send mail", logseal.F{"body": body, "subject": subject})
@@ -30,7 +30,7 @@ func (conf tConf) sendMail(cr cmdReturn) {
 	}
 }
 
-func (conf tConf) execTemplate(s string, cr cmdReturn) string {
+func (conf tConf) execTemplate(s string, cr tCmdReturn) string {
 	buf := &bytes.Buffer{}
 	ui := getUserInfo()
 	templ := template.Must(template.New("tpl").Parse(s))

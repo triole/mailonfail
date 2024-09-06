@@ -1,7 +1,7 @@
 ---
 subject_prefix: >
   [mof@{{.hostname}}] ({{if .success}}success{{else}}error{{end}})
-  cmd: {{.command}}, exitcode: {{.exitcode}}
+  cmd {{.command}}, exitcode {{.exitcode}}
 mail_template: |
   <b>Run Start</b>&nbsp;&nbsp;{{.run_start}}</br>
   <b>Run End</b>&nbsp;&nbsp;&nbsp;&nbsp;{{.run_end}}</br>
@@ -9,7 +9,7 @@ mail_template: |
   <b>User</b>&nbsp;&nbsp;{{.user}}</br>
   <b>Command</b>&nbsp;&nbsp;{{.command}}</br>
   </br><b>Output</b></br><pre>{{.output}}</pre></br>
-  {{if not .success}}
+  {{if .error}}
   </br><b>Error</b></br>{{.error}}</br>
   {{end}}
   </br><b>Exitcode</b></br>{{.exitcode}}</br>

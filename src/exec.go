@@ -11,7 +11,7 @@ import (
 	"github.com/triole/logseal"
 )
 
-type cmdReturn struct {
+type tCmdReturn struct {
 	RunStart    time.Time
 	RunEnd      time.Time
 	RunDuration time.Duration
@@ -21,7 +21,7 @@ type cmdReturn struct {
 	Success     bool
 }
 
-func (conf tConf) runCmd() (cr cmdReturn) {
+func (conf tConf) runCmd() (cr tCmdReturn) {
 	cr.RunStart = time.Now()
 	var stdBuffer bytes.Buffer
 	if !conf.DryRun {
@@ -29,18 +29,22 @@ func (conf tConf) runCmd() (cr cmdReturn) {
 		// mw := io.MultiWriter(&stdBuffer)
 		mw := io.MultiWriter(os.Stdout, &stdBuffer)
 
-		cmd.Stdout = mw
-		cmd.Stderr = mw
-		if cr.Error = cmd.Run(); cr.Error != nil {
-			if exiterr, ok := cr.Error.(*exec.ExitError); ok {
-				// the program has exited with an exit code != 0
-				if status, ok := exiterr.Sys().(syscall.WaitStatus); ok {
-					cr.Exitcode = status.ExitStatus()
+		_, cr.Error = exec.LookPath(conf.Cmd[0])
+		if cr.Error == nil {
+			cmd.Stdout = mw
+			cmd.Stderr = mw
+			if cr.Error = cmd.Run(); cr.Error != nil {
+				if exiterr, ok := cr.Error.(*exec.ExitError); ok {
+					// the program has exited with an exit code != 0
+					if status, ok := exiterr.Sys().(syscall.WaitStatus); ok {
+						cr.Exitcode = status.ExitStatus()
+					}
 				}
 			}
+		} else {
+			cr.Exitcode = 127
 		}
 		if cr.Error != nil {
-			cr.Exitcode = 127
 			lg.Info(
 				"run command failed",
 				logseal.F{
