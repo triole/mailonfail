@@ -1,8 +1,8 @@
 ---
-subject_prefix: >
+mail_subject: >
   [mof@{{.hostname}}] ({{if .success}}success{{else}}error{{end}})
   cmd {{.command}}, exitcode {{.exitcode}}
-mail_template: |
+mail_body: |
   <b>Run Start</b>&nbsp;&nbsp;{{.run_start}}</br>
   <b>Run End</b>&nbsp;&nbsp;&nbsp;&nbsp;{{.run_end}}</br>
   <b>Duration</b>&nbsp;&nbsp;&nbsp;{{.run_duration}}</br></br>

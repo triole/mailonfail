@@ -26,8 +26,8 @@ type tConf struct {
 	MailFrom      string `yaml:"mail_from"`
 	MailTo        string `yaml:"mail_to"`
 	MailOnSuccess bool   `yaml:"mail_on_success"`
-	SubjectPrefix string `yaml:"subject_prefix"`
-	MailTemplate  string `yaml:"mail_template"`
+	MailSubject   string `yaml:"mail_subject"`
+	MailBody      string `yaml:"mail_body"`
 }
 
 func initConf(cmd []string, configFile string, dryRun bool) (conf tConf) {
@@ -98,23 +98,23 @@ func getEnvVars(conf *tConf) *tConf {
 			case "MOF_MAIL_ON_SUCCESS":
 				lg.Debug(msg, logseal.F{"key": "mail_on_success", "val": val})
 				conf.MailOnSuccess = stringToBool(val)
-			case "MOF_SUBJECT_PREFIX":
-				conf.SubjectPrefix = val
-			case "MOF_MAIL_TEMPLATE":
-				conf.MailTemplate = val
+			case "MOF_MAIL_SUBJECT":
+				conf.MailSubject = val
+			case "MOF_MAIL_BODY":
+				conf.MailBody = val
 			}
 		}
 	}
 
 	var defaultConf tConf
-	if conf.SubjectPrefix == "" || conf.MailTemplate != "" {
+	if conf.MailSubject == "" || conf.MailBody != "" {
 		defaultConf = readDefaultConf()
 	}
-	if conf.SubjectPrefix == "" {
-		conf.SubjectPrefix = defaultConf.SubjectPrefix
+	if conf.MailSubject == "" {
+		conf.MailSubject = defaultConf.MailSubject
 	}
-	if conf.MailTemplate == "" {
-		conf.MailTemplate = defaultConf.MailTemplate
+	if conf.MailBody == "" {
+		conf.MailBody = defaultConf.MailBody
 	}
 	return conf
 }

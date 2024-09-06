@@ -12,8 +12,8 @@ import (
 )
 
 func (conf tConf) sendMail(cr tCmdReturn) {
-	subject := conf.execTemplate(conf.SubjectPrefix, cr)
-	body := conf.execTemplate(conf.MailTemplate, cr)
+	subject := conf.execTemplate(conf.MailSubject, cr)
+	body := conf.execTemplate(conf.MailBody, cr)
 	lg.Trace("send mail", logseal.F{"body": body, "subject": subject})
 	if !conf.DryRun {
 		m := mail.NewMessage()
@@ -35,20 +35,20 @@ func (conf tConf) execTemplate(s string, cr tCmdReturn) string {
 	ui := getUserInfo()
 	templ := template.Must(template.New("tpl").Parse(s))
 	err := templ.Execute(buf, map[string]interface{}{
-		"command":      fmt.Sprintf("%q", conf.Cmd),
 		"run_start":    cr.RunStart,
 		"run_end":      cr.RunEnd,
 		"run_duration": cr.RunDuration,
+		"command":      fmt.Sprintf("%q", conf.Cmd),
+		"output":       string(cr.Output),
 		"error":        cr.Error,
 		"exitcode":     cr.Exitcode,
-		"output":       string(cr.Output),
+		"success":      cr.Success,
 		"hostname":     getHostName(),
 		"user_id":      ui.UserID,
 		"group_id":     ui.GroupID,
 		"user":         ui.UserName,
 		"user_name":    ui.Name,
 		"home":         ui.Home,
-		"success":      cr.Success,
 	})
 	lg.IfErrError("unable to use mail template", logseal.F{"error": err})
 	return buf.String()

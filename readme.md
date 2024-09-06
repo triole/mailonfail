@@ -11,7 +11,7 @@
 
 ## Synopsis
 
-Mailtofail sends a notification email when a command fails. I hope that it is useful especially for cron jobs.
+Mailtofail sends a notification email when a command fails. It might be useful especially for cron jobs.
 
 ## Syntax
 
@@ -20,7 +20,7 @@ Keep in mind that flags have to precede the command that should be executed. Usa
 ```shell
 mailonfail ls -la
 
-# set config file and log level
+# set config file and log level, and run "ls -la"
 mailonfail --log-level debug -c myconf.yaml ls -la
 ```
 
@@ -37,17 +37,17 @@ mail_from: user@test.mail
 mail_to: user@test.mail
 mail_on_success: false
 
-subject_prefix: >
+mail_subject: >
   [mof@{{.hostname}}] ({{if .success}}success{{else}}error{{end}})
-  cmd: {{.command}}, exitcode: {{.exitcode}}
-mail_template: |
+  cmd {{.command}}, exitcode {{.exitcode}}
+mail_body: |
   <b>Run Start</b>&nbsp;&nbsp;{{.run_start}}</br>
   <b>Run End</b>&nbsp;&nbsp;&nbsp;&nbsp;{{.run_end}}</br>
   <b>Duration</b>&nbsp;&nbsp;&nbsp;{{.run_duration}}</br></br>
   <b>User</b>&nbsp;&nbsp;{{.user}}</br>
   <b>Command</b>&nbsp;&nbsp;{{.command}}</br>
   </br><b>Output</b></br><pre>{{.output}}</pre></br>
-  {{if not .success}}
+  {{if .error}}
   </br><b>Error</b></br>{{.error}}</br>
   {{end}}
   </br><b>Exitcode</b></br>{{.exitcode}}</br>
@@ -56,15 +56,15 @@ mail_template: |
 Every config value can be overwritten by an env var. This comes in handy in `crontabs`. Available env vars...
 
 ```go mdox-exec="sh/print_av_env_vars.sh"
-MOF_MAIL_FROM
-MOF_MAIL_ON_SUCCESS
-MOF_MAIL_TEMPLATE
-MOF_MAIL_TO
 MOF_SMTP_HOST
-MOF_SMTP_PASS
 MOF_SMTP_PORT
 MOF_SMTP_USER
-MOF_SUBJECT_PREFIX
+MOF_SMTP_PASS
+MOF_MAIL_FROM
+MOF_MAIL_TO
+MOF_MAIL_ON_SUCCESS
+MOF_MAIL_SUBJECT
+MOF_MAIL_BODY
 ```
 
 If `subject_prefix` and `mail_template` are not set they are loaded from the default [conf](src/default_conf.yaml).
@@ -74,20 +74,20 @@ If `subject_prefix` and `mail_template` are not set they are loaded from the def
 The following variables are available in the mail template. Make sure to use golang template syntax (e.g. `{{.username}}`, `{{.output}}`). Available template vars...
 
 ```go mdox-exec="sh/print_av_tpl_vars.sh"
+run_start
+run_end
+run_duration
 command
+output
 error
 exitcode
-group_id
-home
-hostname
-output
-run_duration
-run_end
-run_start
 success
-user
+hostname
 user_id
+group_id
+user
 user_name
+home
 ```
 
 ## Help

@@ -6,5 +6,4 @@ src="${basedir}/src/mail.go"
 
 cat "${src}" |
   grep -Po '"[a-z_]+": .*[a-zA-Z\.()],$' |
-  grep -Po '(?<=")[a-z_]+' |
-  sort
+  grep -Po '(?<=")[a-z_]+'

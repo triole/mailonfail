@@ -4,4 +4,4 @@ basedir="${scriptdir%/*}"
 
 src="${basedir}/src/conf.go"
 
-cat "${src}" | grep -Po '(?<=case ").*(?=")' | sort
+cat "${src}" | grep -Po '(?<=case ").*(?=")'
