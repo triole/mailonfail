@@ -1,4 +1,4 @@
-# Mailonfail
+# Mailonfail ![build](https://github.com/triole/mailonfail/actions/workflows/build.yaml/badge.svg) ![test](https://github.com/triole/mailonfail/actions/workflows/test.yaml/badge.svg)
 
 <!-- toc -->
 
